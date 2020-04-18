@@ -4,12 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
+import tacos.Design;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Taco;
@@ -32,6 +37,15 @@ public class DesignTacoController {
 		}
 		model.addAttribute("design", new Taco());
 		return "design";
+	}
+	
+	@PostMapping
+	public String processDesign(@Valid Design design, Errors errors) {
+		if(errors.hasErrors()) {
+			return "design";
+		}
+		log.info("Processing design: "+ design);
+		return "redirect:/orders/current";
 	}
 
 	private Object filterByType(List<Ingredient> ingredients, Type type) {
